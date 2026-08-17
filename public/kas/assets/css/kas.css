@@ -1,0 +1,193 @@
+/* ============================================================
+   Aplikasi Buku Kas - Gaya Kustom
+   Dipakai bersama tema Metronic (public/admin/assets)
+   ============================================================ */
+
+body {
+    background-image: url("../../admin/assets/media/svg/bg.svg");
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+    background-size: cover;
+}
+
+/* ===== Grafik batang (Dashboard) ===== */
+.kas-barchart {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 14px;
+    height: 250px;
+    padding: 10px 4px 0;
+    border-bottom: 1px solid var(--bs-border-color);
+    border-left: 1px solid var(--bs-border-color);
+    position: relative;
+}
+
+.kas-barchart .kas-bar-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    height: 100%;
+}
+
+.kas-barchart .kas-bars {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 6px;
+    height: 100%;
+    width: 100%;
+    padding-bottom: 6px;
+}
+
+.kas-barchart .kas-bar {
+    width: 16px;
+    border-radius: 4px 4px 0 0;
+    min-height: 2px;
+    transition: height 0.3s ease;
+    position: relative;
+    cursor: pointer;
+}
+
+.kas-barchart .kas-bar:hover::after {
+    content: attr(data-label);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--bs-gray-800);
+    color: var(--bs-gray-100);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 5px;
+    white-space: nowrap;
+    z-index: 5;
+}
+
+.kas-barchart .kas-bar-masuk { background-color: #50cd89; }
+.kas-barchart .kas-bar-keluar { background-color: #f1416c; }
+
+.kas-barchart .kas-month-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--bs-gray-500);
+    padding-top: 4px;
+}
+
+/* ===== Donat (Dashboard) ===== */
+.kas-donut {
+    width: 190px;
+    height: 190px;
+    border-radius: 50%;
+    margin: 0 auto;
+    position: relative;
+    background: var(--bs-gray-200);
+}
+
+.kas-donut .kas-donut-hole {
+    position: absolute;
+    inset: 34px;
+    border-radius: 50%;
+    background: var(--bs-body-bg, #fff);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.kas-donut-hole .kas-donut-total { font-size: 13px; color: var(--bs-gray-500); font-weight: 600; }
+.kas-donut-hole .kas-donut-value { font-size: 15px; font-weight: 700; color: var(--bs-gray-800); padding: 0 8px; text-align: center; }
+
+.kas-legend { display: flex; flex-direction: column; gap: 9px; }
+.kas-legend-item { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+.kas-legend-item .kas-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.kas-legend-item .kas-legend-nama { flex: 1; color: var(--bs-gray-600); font-weight: 500; }
+.kas-legend-item .kas-legend-nilai { color: var(--bs-gray-800); font-weight: 600; }
+
+/* ===== Kategori ===== */
+.kas-kat-icon {
+    width: 46px;
+    height: 46px;
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    color: #fff;
+    flex-shrink: 0;
+}
+
+.kas-kat-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 4px;
+    border-bottom: 1px dashed var(--bs-border-color);
+}
+
+.kas-kat-item:last-child { border-bottom: 0; }
+
+.kas-kat-empty {
+    padding: 24px;
+    text-align: center;
+    color: var(--bs-gray-500);
+    font-weight: 500;
+}
+
+/* ===== Swatch warna kategori ===== */
+.kas-swatches { display: flex; flex-wrap: wrap; gap: 8px; }
+.kas-swatch {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: transform 0.15s ease, border-color 0.15s ease;
+    display: inline-block;
+}
+.kas-swatch:hover { transform: scale(1.1); }
+.kas-swatch.kas-swatch-active { border-color: var(--bs-gray-900); box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.08); }
+
+/* ===== Tabel buku kas / laporan ===== */
+.kas-ledger { font-size: 13px; }
+.kas-ledger th, .kas-ledger td { white-space: nowrap; vertical-align: middle; }
+.kas-ledger .kas-ledger-saldo { font-weight: 700; }
+
+/* ===== Kartu statistik angka besar ===== */
+.kas-stat-number { letter-spacing: -1.5px; }
+
+/* ===== Kartu penggulir ===== */
+.kas-scroll { max-height: 330px; overflow-y: auto; }
+
+/* ===== Bagian yang disembunyikan saat cetak ===== */
+.no-print { display: initial; }
+.print-header { display: none; }
+
+/* ===== Cetak ===== */
+@media print {
+    .app-header,
+    .app-sidebar,
+    .app-toolbar,
+    .app-footer,
+    .card-toolbar,
+    .no-print {
+        display: none !important;
+    }
+
+    body { background: #fff !important; }
+
+    .app-container { max-width: 100% !important; padding: 0 !important; }
+    .app-main { margin-left: 0 !important; padding: 0 !important; }
+    .card { box-shadow: none !important; border: 1px solid #dee2e6 !important; }
+
+    .print-header { display: block !important; }
+    .print-header h3 { margin: 0; font-weight: 700; }
+    .print-header p { margin: 0; color: #666; font-size: 13px; }
+
+    .table { --bs-table-bg: transparent; }
+    .kas-scroll { max-height: none; overflow: visible; }
+}

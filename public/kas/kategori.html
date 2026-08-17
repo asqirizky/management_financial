@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="id" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Kategori Transaksi - Aplikasi Buku Kas</title>
+    <link rel="stylesheet" href="../admin/assets/plugins/global/plugins.bundle.css" />
+    <link rel="stylesheet" href="../admin/assets/css/style.bundle.css" />
+    <link rel="stylesheet" href="assets/css/kas.css" />
+</head>
+<body id="kt_app_body" data-page="kategori" class="app-default"
+      data-kt-app-layout="light-sidebar"
+      data-kt-app-header-fixed="true"
+      data-kt-app-sidebar-enabled="true"
+      data-kt-app-sidebar-fixed="true"
+      data-kt-app-sidebar-hoverable="true"
+      data-kt-app-sidebar-push-header="true"
+      data-kt-app-sidebar-push-toolbar="true"
+      data-kt-app-sidebar-push-footer="true"
+      data-kt-app-toolbar-enabled="true">
+
+    <div id="page-content">
+        <div class="row g-5 g-xl-10">
+            <div class="col-xl-6">
+                <div class="card card-flush h-xl-100">
+                    <div class="card-header pt-7 border-0">
+                        <h3 class="card-title align-items-start flex-column">
+                            <span class="card-label fw-bold text-gray-900">Kategori Pemasukan</span>
+                            <span class="text-gray-500 mt-1 fw-semibold fs-6">Kategori untuk transaksi kas masuk</span>
+                        </h3>
+                        <div class="card-toolbar">
+                            <button type="button" class="btn btn-sm btn-light-success btn-add-kat" data-tipe="masuk">
+                                <i class="ki-outline ki-plus fs-3 me-1"></i>Tambah
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body pt-4">
+                        <div id="kat-masuk"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-6">
+                <div class="card card-flush h-xl-100">
+                    <div class="card-header pt-7 border-0">
+                        <h3 class="card-title align-items-start flex-column">
+                            <span class="card-label fw-bold text-gray-900">Kategori Pengeluaran</span>
+                            <span class="text-gray-500 mt-1 fw-semibold fs-6">Kategori untuk transaksi kas keluar</span>
+                        </h3>
+                        <div class="card-toolbar">
+                            <button type="button" class="btn btn-sm btn-light-danger btn-add-kat" data-tipe="keluar">
+                                <i class="ki-outline ki-plus fs-3 me-1"></i>Tambah
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body pt-4">
+                        <div id="kat-keluar"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Tambah / Edit Kategori -->
+    <div class="modal fade" id="kas-modal-kat" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered mw-500px">
+            <div class="modal-content">
+                <div class="modal-header pb-3">
+                    <h3 class="modal-title fw-bold text-gray-800" id="modal-kat-title">Tambah Kategori</h3>
+                    <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal">
+                        <i class="ki-outline ki-cross fs-2"></i>
+                    </div>
+                </div>
+                <div class="modal-body py-6">
+                    <form id="form-kat" novalidate>
+                        <input type="hidden" id="kat-id" />
+                        <input type="hidden" id="kat-tipe" />
+                        <div class="mb-7">
+                            <label class="required fs-6 fw-semibold form-label mb-2">Nama Kategori</label>
+                            <input type="text" class="form-control form-control-solid" id="kat-nama" placeholder="Contoh: Penjualan" required />
+                        </div>
+                        <div class="mb-7">
+                            <label class="required fs-6 fw-semibold form-label mb-2">Warna</label>
+                            <div class="kas-swatches" id="kat-swatches"></div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="required fs-6 fw-semibold form-label mb-2">Ikon</label>
+                            <select class="form-select form-select-solid" id="kat-ikon"></select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer py-4">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-primary" id="btn-save-kat">
+                        <i class="ki-outline ki-check fs-3 me-1"></i>Simpan
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../vendor/sweetalert/sweetalert.all.js"></script>
+    <script src="../admin/assets/plugins/global/plugins.bundle.js"></script>
+    <script src="../admin/assets/js/scripts.bundle.js"></script>
+    <script src="assets/js/kas.js"></script>
+    <script>
+        var K = kasApp;
+        var modalKat = null;
+        var pilihWarna = '';
+
+        kasApp.init({
+            page: 'kategori',
+            title: 'Kategori Transaksi',
+            crumbs: [['Beranda', 'index.html'], ['Kategori']],
+            onReady: function () {
+                modalKat = new bootstrap.Modal(document.getElementById('kas-modal-kat'));
+                document.getElementById('kat-swatches').innerHTML = K.WARNA_KAT.map(function (w) {
+                    return '<span class="kas-swatch" data-warna="' + w + '" style="background:' + w + '"></span>';
+                }).join('');
+                document.getElementById('kat-ikon').innerHTML = K.IKON_KAT.map(function (i) {
+                    return '<option value="' + i + '">' + i + '</option>';
+                }).join('');
+
+                document.querySelectorAll('.btn-add-kat').forEach(function (btn) {
+                    btn.addEventListener('click', function () {
+                        openModal(null, this.getAttribute('data-tipe'));
+                    });
+                });
+                document.getElementById('kat-swatches').addEventListener('click', function (e) {
+                    var sw = e.target.closest('.kas-swatch');
+                    if (!sw) return;
+                    pilihWarna = sw.getAttribute('data-warna');
+                    document.querySelectorAll('.kas-swatch').forEach(function (s) { s.classList.remove('kas-swatch-active'); });
+                    sw.classList.add('kas-swatch-active');
+                });
+                document.getElementById('btn-save-kat').addEventListener('click', saveKatForm);
+                document.getElementById('kat-masuk').addEventListener('click', onKatClick);
+                document.getElementById('kat-keluar').addEventListener('click', onKatClick);
+                renderKat();
+            }
+        });
+
+        function renderKat() {
+            ['masuk', 'keluar'].forEach(function (tipe) {
+                var el = document.getElementById(tipe === 'masuk' ? 'kat-masuk' : 'kat-keluar');
+                var list = K.getKat().filter(function (k) { return k.tipe === tipe; });
+                if (!list.length) {
+                    el.innerHTML = '<div class="kas-kat-empty">Belum ada kategori.</div>';
+                    return;
+                }
+                el.innerHTML = list.map(function (k) {
+                    var count = K.getTrx().filter(function (t) { return t.kategori === k.nama; }).length;
+                    return '<div class="kas-kat-item">' +
+                        '<span class="kas-kat-icon" style="background:' + k.warna + '"><i class="ki-outline ' + k.ikon + '"></i></span>' +
+                        '<div class="flex-grow-1">' +
+                        '<div class="fw-bold text-gray-800">' + k.nama + '</div>' +
+                        '<div class="text-muted fw-semibold fs-7">' + count + ' transaksi</div>' +
+                        '</div>' +
+                        '<a href="#" class="btn btn-sm btn-icon btn-light btn-active-light-primary me-1" data-aksi="edit" data-id="' + k.id + '">' +
+                        '<i class="ki-outline ki-pencil fs-5"></i></a>' +
+                        '<a href="#" class="btn btn-sm btn-icon btn-light btn-active-light-danger" data-aksi="hapus" data-id="' + k.id + '">' +
+                        '<i class="ki-outline ki-trash fs-5"></i></a>' +
+                        '</div>';
+                }).join('');
+            });
+        }
+
+        function onKatClick(e) {
+            var el = e.target.closest('[data-aksi]');
+            if (!el) return;
+            e.preventDefault();
+            var id = Number(el.getAttribute('data-id'));
+            var kat = K.getKat().filter(function (k) { return k.id === id; })[0];
+            if (!kat) return;
+
+            if (el.getAttribute('data-aksi') === 'edit') {
+                openModal(kat);
+            } else {
+                var dipakai = K.getTrx().filter(function (t) { return t.kategori === kat.nama; }).length;
+                var pesan = dipakai > 0
+                    ? 'Kategori ini digunakan oleh ' + dipakai + ' transaksi. Kategori tetap dihapus dan transaksi tidak akan terhapus.'
+                    : 'Kategori "' + kat.nama + '" akan dihapus.';
+                K.confirmDelete(pesan, function () {
+                    K.removeKat(id);
+                    K.toast('Kategori berhasil dihapus', 'success');
+                    renderKat();
+                });
+            }
+        }
+
+        function openModal(kat, presetTipe) {
+            var isEdit = !!kat;
+            document.getElementById('kat-id').value = kat ? kat.id : '';
+            document.getElementById('modal-kat-title').textContent = isEdit ? 'Edit Kategori' : 'Tambah Kategori';
+            document.getElementById('kat-nama').value = kat ? kat.nama : '';
+            document.getElementById('kat-tipe').value = kat ? kat.tipe : presetTipe;
+
+            pilihWarna = kat ? kat.warna : K.WARNA_KAT[0];
+            document.querySelectorAll('.kas-swatch').forEach(function (s) {
+                s.classList.toggle('kas-swatch-active', s.getAttribute('data-warna') === pilihWarna);
+            });
+
+            document.getElementById('kat-ikon').value = kat ? kat.ikon : K.IKON_KAT[0];
+            modalKat.show();
+        }
+
+        function saveKatForm() {
+            var nama = document.getElementById('kat-nama').value.trim();
+            if (!nama) {
+                K.toast('Nama kategori wajib diisi!', 'warning');
+                return;
+            }
+            var tipe = document.getElementById('kat-tipe').value;
+            var id = Number(document.getElementById('kat-id').value);
+
+            // Cegah nama ganda untuk tipe yang sama
+            var ganda = K.getKat().some(function (k) {
+                return k.nama.toLowerCase() === nama.toLowerCase() && k.tipe === tipe && k.id !== id;
+            });
+            if (ganda) {
+                K.toast('Nama kategori sudah ada!', 'warning');
+                return;
+            }
+
+            var data = { nama: nama, tipe: tipe, warna: pilihWarna, ikon: document.getElementById('kat-ikon').value };
+            if (id) {
+                K.updateKat(id, data);
+                K.toast('Kategori berhasil diperbarui', 'success');
+            } else {
+                K.addKat(data);
+                K.toast('Kategori berhasil disimpan', 'success');
+            }
+            modalKat.hide();
+            renderKat();
+        }
+    </script>
+</body>
+</html>

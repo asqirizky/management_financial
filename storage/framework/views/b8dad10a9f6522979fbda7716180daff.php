@@ -1,0 +1,1 @@
+<?php /**PATH /var/www/html/resources/views/admin/Master/pendPagi/pendPagi.blade.php ENDPATH**/ ?>

@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="id" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Transaksi Kas - Aplikasi Buku Kas</title>
+    <link rel="stylesheet" href="../admin/assets/plugins/global/plugins.bundle.css" />
+    <link rel="stylesheet" href="../admin/assets/css/style.bundle.css" />
+    <link rel="stylesheet" href="assets/css/kas.css" />
+</head>
+<body id="kt_app_body" data-page="transaksi" class="app-default"
+      data-kt-app-layout="light-sidebar"
+      data-kt-app-header-fixed="true"
+      data-kt-app-sidebar-enabled="true"
+      data-kt-app-sidebar-fixed="true"
+      data-kt-app-sidebar-hoverable="true"
+      data-kt-app-sidebar-push-header="true"
+      data-kt-app-sidebar-push-toolbar="true"
+      data-kt-app-sidebar-push-footer="true"
+      data-kt-app-toolbar-enabled="true">
+
+    <div id="page-content">
+        <div class="card">
+            <div class="card-header pt-6 border-0">
+                <div class="card-title">
+                    <div class="my-1 d-flex align-items-center position-relative">
+                        <i class="ki-outline ki-magnifier fs-3 position-absolute ms-4"></i>
+                        <input type="text" id="f-cari" class="form-control w-250px ps-12" placeholder="Cari transaksi..." />
+                    </div>
+                </div>
+                <div class="card-toolbar">
+                    <div class="d-flex gap-3">
+                        <button type="button" class="btn btn-light-success btn-open-trx" data-tipe="masuk">
+                            <i class="ki-outline ki-arrow-down fs-2"></i> Kas Masuk
+                        </button>
+                        <button type="button" class="btn btn-light-danger btn-open-trx" data-tipe="keluar">
+                            <i class="ki-outline ki-arrow-up fs-2"></i> Kas Keluar
+                        </button>
+                        <button type="button" class="btn btn-primary btn-open-trx" data-tipe="">
+                            <i class="ki-outline ki-plus fs-2"></i> Tambah Transaksi
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-body pt-4">
+                <!-- Filter -->
+                <div class="d-flex flex-wrap align-items-center gap-3 mb-5">
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-sm btn-primary filter-tipe" data-tipe="semua">Semua</button>
+                        <button type="button" class="btn btn-sm btn-light filter-tipe" data-tipe="masuk">Pemasukan</button>
+                        <button type="button" class="btn btn-sm btn-light filter-tipe" data-tipe="keluar">Pengeluaran</button>
+                    </div>
+                    <select id="f-bulan" class="form-select form-select-sm w-150px"></select>
+                    <select id="f-kategori" class="form-select form-select-sm w-180px"></select>
+                    <span class="ms-auto fw-semibold text-gray-500 fs-7" id="f-info"></span>
+                </div>
+
+                <!-- Ringkasan hasil filter -->
+                <div class="d-flex flex-wrap gap-8 mb-5 bg-light-primary rounded-3 px-6 py-4">
+                    <div class="d-flex flex-column">
+                        <span class="fs-7 fw-semibold text-gray-500">Pemasukan</span>
+                        <span class="fs-4 fw-bold text-success" id="sum-masuk">Rp 0</span>
+                    </div>
+                    <div class="d-flex flex-column">
+                        <span class="fs-7 fw-semibold text-gray-500">Pengeluaran</span>
+                        <span class="fs-4 fw-bold text-danger" id="sum-keluar">Rp 0</span>
+                    </div>
+                    <div class="d-flex flex-column">
+                        <span class="fs-7 fw-semibold text-gray-500">Selisih</span>
+                        <span class="fs-4 fw-bold text-primary" id="sum-selisih">Rp 0</span>
+                    </div>
+                </div>
+
+                <!-- Tabel -->
+                <div class="table-responsive">
+                    <table class="table table-row-bordered align-middle gy-5 fs-6">
+                        <thead class="fw-bold text-gray-600 text-uppercase fs-7 border-bottom">
+                            <tr>
+                                <th class="min-w-120px">Tanggal</th>
+                                <th class="min-w-200px">Keterangan</th>
+                                <th class="min-w-150px">Kategori</th>
+                                <th class="min-w-120px">Metode</th>
+                                <th class="text-end min-w-140px">Jumlah</th>
+                                <th class="text-end min-w-100px">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-trx"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Tambah / Edit Transaksi -->
+    <div class="modal fade" id="kas-modal-trx" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered mw-550px">
+            <div class="modal-content">
+                <div class="modal-header pb-3">
+                    <h3 class="modal-title fw-bold text-gray-800" id="modal-trx-title">Tambah Transaksi</h3>
+                    <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal">
+                        <i class="ki-outline ki-cross fs-2"></i>
+                    </div>
+                </div>
+                <div class="modal-body py-6">
+                    <form id="form-trx" novalidate>
+                        <input type="hidden" id="trx-id" />
+                        <div class="mb-7">
+                            <label class="fs-6 fw-semibold form-label mb-2">Jenis Transaksi</label>
+                            <div class="d-flex gap-8">
+                                <div class="form-check form-check-custom form-check-solid form-check-success">
+                                    <input class="form-check-input" type="radio" name="trx-tipe" id="tipe-masuk" value="masuk" checked />
+                                    <label class="form-check-label fw-semibold" for="tipe-masuk">Pemasukan</label>
+                                </div>
+                                <div class="form-check form-check-custom form-check-solid form-check-danger">
+                                    <input class="form-check-input" type="radio" name="trx-tipe" id="tipe-keluar" value="keluar" />
+                                    <label class="form-check-label fw-semibold" for="tipe-keluar">Pengeluaran</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-7">
+                            <div class="col-md-6">
+                                <label class="required fs-6 fw-semibold form-label mb-2">Tanggal</label>
+                                <input type="date" class="form-control form-control-solid" id="trx-tanggal" required />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="required fs-6 fw-semibold form-label mb-2">Jumlah (Rp)</label>
+                                <input type="number" min="0" step="1" class="form-control form-control-solid" id="trx-jumlah" placeholder="0" required />
+                            </div>
+                        </div>
+                        <div class="mb-7">
+                            <label class="required fs-6 fw-semibold form-label mb-2">Kategori</label>
+                            <select class="form-select form-select-solid" id="trx-kategori" required></select>
+                        </div>
+                        <div class="mb-7">
+                            <label class="required fs-6 fw-semibold form-label mb-2">Metode Pembayaran</label>
+                            <select class="form-select form-select-solid" id="trx-metode"></select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="fs-6 fw-semibold form-label mb-2">Keterangan</label>
+                            <textarea class="form-control form-control-solid" id="trx-keterangan" rows="2" placeholder="Deskripsi transaksi (opsional)"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer py-4">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-primary" id="btn-save-trx">
+                        <i class="ki-outline ki-check fs-3 me-1"></i>Simpan
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../vendor/sweetalert/sweetalert.all.js"></script>
+    <script src="../admin/assets/plugins/global/plugins.bundle.js"></script>
+    <script src="../admin/assets/js/scripts.bundle.js"></script>
+    <script src="assets/js/kas.js"></script>
+    <script>
+        var K = kasApp;
+        var state = { tipe: 'semua', bulan: '', kategori: '', cari: '' };
+        var modalTrx = null;
+
+        var params = new URLSearchParams(location.search);
+        if (params.get('tipe')) state.tipe = params.get('tipe');
+
+        kasApp.init({
+            page: 'transaksi',
+            title: 'Transaksi Kas',
+            crumbs: [['Beranda', 'index.html'], ['Transaksi Kas']],
+            onReady: function () {
+                modalTrx = new bootstrap.Modal(document.getElementById('kas-modal-trx'));
+                document.getElementById('f-bulan').innerHTML = K.bulanOptions('', true);
+                document.getElementById('f-cari').addEventListener('input', function () {
+                    state.cari = this.value;
+                    renderTrx();
+                });
+                document.getElementById('f-bulan').addEventListener('change', function () {
+                    state.bulan = this.value;
+                    renderTrx();
+                });
+                document.getElementById('f-kategori').addEventListener('change', function () {
+                    state.kategori = this.value;
+                    renderTrx();
+                });
+                document.querySelectorAll('.filter-tipe').forEach(function (btn) {
+                    btn.addEventListener('click', function () {
+                        state.tipe = this.getAttribute('data-tipe');
+                        document.querySelectorAll('.filter-tipe').forEach(function (b) {
+                            b.classList.remove('btn-primary');
+                            b.classList.add('btn-light');
+                        });
+                        this.classList.remove('btn-light');
+                        this.classList.add('btn-primary');
+                        renderTrx();
+                    });
+                });
+                document.querySelectorAll('.btn-open-trx').forEach(function (btn) {
+                    btn.addEventListener('click', function () {
+                        openModal(null, this.getAttribute('data-tipe'));
+                    });
+                });
+                document.getElementById('btn-save-trx').addEventListener('click', saveTrxForm);
+                document.querySelectorAll('input[name="trx-tipe"]').forEach(function (r) {
+                    r.addEventListener('change', function () {
+                        document.getElementById('trx-kategori').innerHTML = K.kategoriOptions(this.value, '', true);
+                    });
+                });
+                document.getElementById('tbody-trx').addEventListener('click', onTableClick);
+                setFilterChips();
+                renderTrx();
+            }
+        });
+
+        function setFilterChips() {
+            document.querySelectorAll('.filter-tipe').forEach(function (b) {
+                if (b.getAttribute('data-tipe') === state.tipe) {
+                    b.classList.remove('btn-light');
+                    b.classList.add('btn-primary');
+                } else {
+                    b.classList.add('btn-light');
+                }
+            });
+        }
+
+        function renderTrx() {
+            var list = K.getTrx();
+            if (state.tipe !== 'semua') list = list.filter(function (t) { return t.tipe === state.tipe; });
+            if (state.bulan) list = list.filter(function (t) { return t.tanggal.indexOf(state.bulan) === 0; });
+            if (state.kategori) list = list.filter(function (t) { return t.kategori === state.kategori; });
+            if (state.cari) {
+                var q = state.cari.toLowerCase();
+                list = list.filter(function (t) {
+                    return (t.keterangan || '').toLowerCase().indexOf(q) >= 0 ||
+                        t.kategori.toLowerCase().indexOf(q) >= 0 ||
+                        t.metode.toLowerCase().indexOf(q) >= 0;
+                });
+            }
+            var sorted = K.sortedTrx(list);
+
+            document.getElementById('sum-masuk').textContent = K.formatRupiah(K.sumTipe(sorted, 'masuk'));
+            document.getElementById('sum-keluar').textContent = K.formatRupiah(K.sumTipe(sorted, 'keluar'));
+            document.getElementById('sum-selisih').textContent = K.formatRupiah(
+                K.sumTipe(sorted, 'masuk') - K.sumTipe(sorted, 'keluar'));
+            document.getElementById('f-info').textContent = sorted.length + ' transaksi';
+
+            document.getElementById('f-kategori').innerHTML = K.kategoriOptions('', state.kategori);
+
+            var tbody = document.getElementById('tbody-trx');
+            if (!sorted.length) {
+                tbody.innerHTML = '<tr><td colspan="6" class="text-center text-gray-500 fw-semibold py-10">' +
+                    'Belum ada transaksi yang cocok dengan filter.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = sorted.map(function (t) {
+                var isMasuk = t.tipe === 'masuk';
+                var kat = K.namaKategori(t.kategori);
+                return '<tr>' +
+                    '<td class="text-nowrap text-gray-600 fw-semibold">' + K.formatTanggal(t.tanggal) + '</td>' +
+                    '<td>' +
+                    '<span class="fw-bold text-gray-800 d-block">' + (t.keterangan || 'Tanpa keterangan') + '</span>' +
+                    '<span class="text-muted fw-semibold fs-7">' + t.metode + '</span>' +
+                    '</td>' +
+                    '<td>' +
+                    '<span class="badge badge-light" style="--bs-badge-bg:' + (kat ? kat.warna : '#a7a7c4') + '22; --bs-badge-color:' + (kat ? kat.warna : '#a7a7c4') + '">' +
+                    '<span class="bullet bullet-dot me-2" style="background:' + (kat ? kat.warna : '#a7a7c4') + '"></span>' +
+                    t.kategori + '</span>' +
+                    '</td>' +
+                    '<td class="text-gray-600 fw-semibold">' + t.metode + '</td>' +
+                    '<td class="text-end fw-bold ' + (isMasuk ? 'text-success' : 'text-danger') + '">' +
+                    (isMasuk ? '+' : '-') + ' ' + K.formatRupiah(t.jumlah) +
+                    '</td>' +
+                    '<td class="text-end">' +
+                    '<a href="#" class="btn btn-sm btn-icon btn-light btn-active-light-primary me-2" data-aksi="edit" data-id="' + t.id + '">' +
+                    '<i class="ki-outline ki-pencil fs-5"></i></a>' +
+                    '<a href="#" class="btn btn-sm btn-icon btn-light btn-active-light-danger" data-aksi="hapus" data-id="' + t.id + '">' +
+                    '<i class="ki-outline ki-trash fs-5"></i></a>' +
+                    '</td>' +
+                    '</tr>';
+            }).join('');
+        }
+
+        function onTableClick(e) {
+            var el = e.target.closest('[data-aksi]');
+            if (!el) return;
+            e.preventDefault();
+            var id = Number(el.getAttribute('data-id'));
+            if (el.getAttribute('data-aksi') === 'edit') {
+                openModal(id);
+            } else {
+                var trx = K.trxById(id);
+                K.confirmDelete('Transaksi "' + (trx && trx.keterangan ? trx.keterangan : trx.kategori) + '" akan dihapus dan tidak dapat dikembalikan!', function () {
+                    K.removeTrx(id);
+                    K.toast('Transaksi berhasil dihapus', 'success');
+                    renderTrx();
+                });
+            }
+        }
+
+        function openModal(id, presetTipe) {
+            var trx = id ? K.trxById(id) : null;
+            document.getElementById('trx-id').value = id || '';
+            document.getElementById('modal-trx-title').textContent = trx ? 'Edit Transaksi' : 'Tambah Transaksi';
+
+            var tipe = presetTipe || (trx ? trx.tipe : 'masuk');
+            document.getElementById(tipe === 'masuk' ? 'tipe-masuk' : 'tipe-keluar').checked = true;
+
+            document.getElementById('trx-tanggal').value = trx ? trx.tanggal : K.isoToday();
+            document.getElementById('trx-jumlah').value = trx ? trx.jumlah : '';
+            document.getElementById('trx-keterangan').value = trx ? (trx.keterangan || '') : '';
+            document.getElementById('trx-metode').innerHTML = K.metodeOptions(trx ? trx.metode : 'Tunai');
+            document.getElementById('trx-kategori').innerHTML = K.kategoriOptions(tipe, trx ? trx.kategori : '', true);
+
+            modalTrx.show();
+        }
+
+        function saveTrxForm() {
+            var tanggal = document.getElementById('trx-tanggal').value;
+            var jumlah = document.getElementById('trx-jumlah').value;
+            var kategori = document.getElementById('trx-kategori').value;
+            var tipe = document.querySelector('input[name="trx-tipe"]:checked').value;
+
+            if (!tanggal || !jumlah || !kategori) {
+                K.toast('Lengkapi tanggal, jumlah, dan kategori!', 'warning');
+                return;
+            }
+            if (Number(jumlah) <= 0) {
+                K.toast('Jumlah harus lebih dari 0!', 'warning');
+                return;
+            }
+
+            var data = {
+                tanggal: tanggal,
+                tipe: tipe,
+                kategori: kategori,
+                jumlah: Number(jumlah),
+                metode: document.getElementById('trx-metode').value,
+                keterangan: document.getElementById('trx-keterangan').value.trim()
+            };
+
+            var id = Number(document.getElementById('trx-id').value);
+            if (id) {
+                K.updateTrx(id, data);
+                K.toast('Transaksi berhasil diperbarui', 'success');
+            } else {
+                K.addTrx(data);
+                K.toast('Transaksi berhasil disimpan', 'success');
+            }
+            modalTrx.hide();
+            renderTrx();
+        }
+    </script>
+</body>
+</html>
