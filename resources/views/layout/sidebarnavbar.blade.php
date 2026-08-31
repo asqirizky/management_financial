@@ -3,10 +3,10 @@
 	<!--begin::Head-->
 	<head>
 <base href="../" />
-		<title>Admin Website - Perpustakaan Ibrahimy</title>
+		<title>Admin Management Financial</title>
 		<meta charset="utf-8" />
-		<meta name="description" content="Admin Website Perpustakaan Ibrahimy hanya dapat diakses oleh pengelola dan staff yang diberi izin oleh pengelola" />
-		<meta name="keywords" content="Admin Website Perpustakaan Ibrahimy hanya dapat diakses oleh pengelola dan staff yang diberi izin oleh pengelola" />
+		<meta name="description" content="Admin Management Financial hanya dapat diakses oleh pengelola dan staff yang diberi izin oleh pengelola" />
+		<meta name="keywords" content="Admin Management Financial hanya dapat diakses oleh pengelola dan staff yang diberi izin oleh pengelola" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta property="og:locale" content="en_US" />
 		<meta property="og:type" content="article" />
@@ -37,12 +37,38 @@
 		<script>// Frame-busting to prevent site from being loaded within a frame without permission (click-jacking) if (window.top != window.self) { window.top.location.replace(window.self.location.href); }</script>
 
         <style>
+            /* ===== Background body (default: light mode) ===== */
             body  {
-                background-image: url("admin/assets/media/svg/bg.svg");
+                background-color: #f1f5f9;
+                background-image: linear-gradient(135deg, rgba(226,232,240,0.35) 0%, rgba(209,230,222,0.35) 50%, rgba(219,226,242,0.35) 75%, rgba(241,245,249,0.35) 100%);
                 background-repeat: no-repeat;
                 background-attachment: fixed;
                 background-position: center;
                 background-size: cover;
+            }
+            /* ===== Background body (dark mode) ===== */
+            [data-bs-theme="dark"] body  {
+                background-color: #0f172a;
+                background-image: linear-gradient(135deg, rgba(20,34,31,0.35) 0%, rgba(30,27,75,0.35) 50%, rgba(49,46,129,0.35) 75%, rgba(15,23,42,0.35) 100%);
+                background-repeat: no-repeat;
+                background-attachment: fixed;
+                background-position: center;
+                background-size: cover;
+            }
+
+            /* ===== Active menu link -> hijau terang (badge light) ===== */
+            .menu-link.active {
+                background-color: rgba(19, 171, 69, 0.12) !important;
+                color: #13ab45 !important;
+                backdrop-filter: blur(2px);
+                -webkit-backdrop-filter: blur(2px);
+            }
+            .menu-link.active .menu-title,
+            .menu-link.active .menu-icon {
+                color: #13ab45 !important;
+            }
+            .menu-link.active .menu-bullet .bullet-dot {
+                background-color: #13ab45 !important;
             }
         </style>
 
@@ -85,7 +111,7 @@
 									<div data-kt-menu-trigger="{default: 'click', lg: 'hover'}" data-kt-menu-placement="bottom-start" class="menu-item menu-here-bg menu-lg-down-accordion me-0 me-lg-2">
 										<!--begin:Menu link-->
 										<span class="menu-link">
-											<span class="menu-title">Sistem Manajemen Website Perpustakaan Ibrahimy</span>
+											<span class="menu-title">System Management Financial</span>
 										</span>
 										<!--end:Menu link-->
 									</div>
@@ -156,7 +182,7 @@
 								<div class="app-navbar-item ms-1 ms-md-4" id="kt_header_user_menu_toggle">
 									<!--begin::Menu wrapper-->
 									<div class="cursor-pointer symbol symbol-35px" data-kt-menu-trigger="{default: 'click', lg: 'hover'}" data-kt-menu-attach="parent" data-kt-menu-placement="bottom-end">
-										<img src="storage/foto/{{ auth()->user()->foto }}" class="rounded-3" alt="user" />
+										<img src="{{ auth()->user() ? 'storage/foto/'.auth()->user()->foto : 'assets/media/avatars/blank.png' }}" class="rounded-3" alt="user" />
 									</div>
 									<!--begin::User account menu-->
 									<div class="py-4 menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-800 menu-state-bg menu-state-color fw-semibold fs-6 w-275px" data-kt-menu="true">
@@ -165,14 +191,14 @@
 											<div class="px-3 menu-content d-flex align-items-center">
 												<!--begin::Avatar-->
 												<div class="symbol symbol-50px me-5">
-													<img alt="Logo" src="storage/foto/{{ auth()->user()->foto }}" />
+													<img alt="Logo" src="{{ auth()->user() ? 'storage/foto/'.auth()->user()->foto : 'assets/media/avatars/blank.png' }}" />
 												</div>
 												<!--end::Avatar-->
 												<!--begin::Username-->
 												<div class="d-flex flex-column">
-													<div class="fw-bold d-flex align-items-center fs-5">{{ auth()->user()->name }}
+													<div class="fw-bold d-flex align-items-center fs-5">{{ auth()->user()->name ?? '' }}
 													<span class="px-2 py-1 badge badge-light-success fw-bold fs-8 ms-2">AKtif</span></div>
-													<a href="#" class="fw-semibold text-muted text-hover-primary fs-7">{{ auth()->user()->idstaf }}</a>
+													<a href="#" class="fw-semibold text-muted text-hover-primary fs-7">{{ auth()->user()->idstaf ?? '' }}</a>
 												</div>
 												<!--end::Username-->
 											</div>
@@ -220,13 +246,16 @@
 					<div id="kt_app_sidebar" class="app-sidebar flex-column" data-kt-drawer="true" data-kt-drawer-name="app-sidebar" data-kt-drawer-activate="{default: true, lg: false}" data-kt-drawer-overlay="true" data-kt-drawer-width="225px" data-kt-drawer-direction="start" data-kt-drawer-toggle="#kt_app_sidebar_mobile_toggle">
 						<!--begin::Logo-->
 						<div class="px-6 app-sidebar-logo" id="kt_app_sidebar_logo">
-							<!--begin::Logo image-->
-							<a href="index.html">
-								<img alt="Logo" src="admin/assets/media/logos/default.svg" class="h-35px app-sidebar-logo-default theme-light-show" />
-								<img alt="Logo" src="admin/assets/media/logos/default-dark.svg" class="h-35px app-sidebar-logo-default theme-dark-show" />
-								<img alt="Logo" src="admin/assets/media/logos/default-small.svg" class="h-35px app-sidebar-logo-minimize" />
+							<!--begin::Logo text-->
+							<a href="index.html" class="text-decoration-none d-flex flex-column lh-1">
+								<span class="fs-4 fw-bold text-dark app-sidebar-logo-default theme-light-show">Management</span>
+								<span class="fs-4 fw-bold text-dark app-sidebar-logo-default theme-light-show">Financial</span>
+								<span class="fs-4 fw-bold text-white app-sidebar-logo-default theme-dark-show">Management</span>
+								<span class="fs-4 fw-bold text-white app-sidebar-logo-default theme-dark-show">Financial</span>
+								<span class="fs-5 fw-bold text-dark app-sidebar-logo-minimize theme-light-show">MF</span>
+								<span class="fs-5 fw-bold text-white app-sidebar-logo-minimize theme-dark-show">MF</span>
 							</a>
-							<!--end::Logo image-->
+							<!--end::Logo text-->
 							<!--begin::Sidebar toggle-->
 							<!--begin::Minimized sidebar setup:
             if (isset($_COOKIE["sidebar_minimize_state"]) && $_COOKIE["sidebar_minimize_state"] === "on") {
@@ -269,328 +298,34 @@
 											<!--end:Menu content-->
 										</div>
 
-										@php
-											$attendancePermission = [
-												'absen attendance-lihat'
-											];
-
-											$attendanceActive = request()->is('admin/absen-*');
-										@endphp
-										
-										@canany($attendancePermission)
-										@can('absen attendance-lihat')											
 										<div data-kt-menu-trigger="click" class="menu-item menu-accordion">
-                                            <a class="menu-link {{ request()->is('admin/absen-attendance') ? 'active' : '' }}" href="admin/absen-attendance">
+                                            <a class="menu-link {{ request()->is('admin/inflow') ? 'active' : '' }}" href="admin/inflow">
                                                 <span class="menu-icon">
-													<i class="ki-outline ki-shield-tick fs-2"></i>
+													<i class="ki-outline ki-chart-line-up fs-2"></i>
 												</span> 
-												<span class="menu-title">Attendance Room</span>
+												<span class="menu-title">Cash Inflow</span>
 											</a>
 										</div>
-										@endcan
-										@endcanany
 
-
-                                        @php
-                                        $kehadiranPermissions = [
-                                            'kehadiran izin-lihat',
-                                            'kehadiran rekapan-lihat',
-                                        ];
-
-                                        $kehadiranActive = request()->is('admin/kehadiran-*');
-                                        @endphp
-
-                                        @canany($kehadiranPermissions)
-                                        <div data-kt-menu-trigger="click" class="menu-item menu-accordion {{ $kehadiranActive ? 'here show' : '' }}">
-                                            <span class="menu-link">
-                                                <span class="menu-icon">
-                                                    <i class="ki-outline ki-calendar-tick fs-2"></i>
-                                                </span>
-                                                <span class="menu-title">Struktural</span>
-                                                <span class="menu-arrow"></span>
-                                            </span>
-                                            <div class="menu-sub menu-sub-accordion">
-                                                
-                                                @can('kehadiran izin-lihat')
-                                                <div class="menu-item">
-                                                    <a class="menu-link {{ request()->is('admin/kehadiran-izin') ? 'active' : '' }}" href="admin/kehadiran-izin">
-                                                        <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
-                                                        <span class="menu-title">Izin</span>
-                                                    </a>
-                                                </div>
-                                                @endcan
-                                                @can('kehadiran rekapan-lihat')
-                                                <div class="menu-item">
-                                                    <a class="menu-link {{ request()->is('admin/kehadiran-rekapan') ? 'active' : '' }}" href="admin/kehadiran-rekapan">
-                                                        <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
-                                                        <span class="menu-title">Rekap</span>
-                                                    </a>
-                                                </div>
-                                                @endcan
-
-                                            </div>
-                                        </div>
-                                        @endcanany
-
-
-                                        @php
-                                            $absenPermission = [
-                                                'absen absen-lihat',
-                                                'absen izin-lihat',
-                                                'absen khidmah-lihat',
-                                                'absen rekap-lihat',
-                                            ];
-
-                                            $absenActive = request()->is('admin/absensi-*');
-                                        @endphp
-
-                                        @canany($absenPermission)
-                                        <div data-kt-menu-trigger="click" class="menu-item menu-accordion {{ $absenActive ? 'here show' : '' }}">
-                                            <span class="menu-link">
-                                                <span class="menu-icon">
-                                                    <i class="ki-outline ki-user-tick fs-2"></i>
-                                                </span>
-                                                <span class="menu-title">Tenaga Khidmah</span>
-                                                <span class="menu-arrow"></span>
-                                            </span>
-                                            <div class="menu-sub menu-sub-accordion">
-                                                @can('absen khidmah-lihat')
-                                                <div class="menu-item">
-                                                    <a class="menu-link {{ request()->is('admin/absensi-khidmah') ? 'active' : '' }}" href="admin/absensi-khidmah">
-                                                        <span class="menu-bullet">
-															<span class="bullet bullet-dot"></span>
-														</span>
-                                                        <span class="menu-title">Khidmah</span>
-                                                    </a>
-                                                </div>
-                                                @endcan
-                                                @can('absen izin-lihat')
-                                                <div class="menu-item">
-                                                    <a class="menu-link {{ request()->is('admin/absensi-izin') ? 'active' : '' }}" href="admin/absensi-izin">
-                                                        <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
-                                                        <span class="menu-title">Izin</span>
-                                                    </a>
-                                                </div>
-                                                @endcan
-                                                @can('absen rekap-lihat')
-                                                <div class="menu-item">
-                                                    <a class="menu-link {{ request()->is('admin/absensi-rekap') ? 'active' : '' }}" href="admin/absensi-rekap">
-                                                        <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
-                                                        <span class="menu-title">Rekap</span>
-                                                    </a>
-                                                </div>
-                                                @endcan
-                                            </div>
-                                        </div>
-                                        @endcanany
-
-										<div class="pt-5 menu-item">
-											<!--begin:Menu content-->
-											<div class="menu-content">
-												<span class="menu-heading fw-bold text-uppercase fs-7">Data Master</span>
-											</div>
-											<!--end:Menu content-->
-										</div>
-
-
-										@php
-											$masterPermission = [
-												'master pustakawan-lihat',
-												'master jadwal-lihat',
-												'master libur-lihat',
-												'master ruang-lihat',
-												'master jabatan-lihat',
-												'master pendPagi-lihat'
-											];
-
-											$masterActive = request()->is('admin/master-*');
-										@endphp
-
-										@canany($masterPermission)
-										<!--begin:Menu item-->
-										@can('master pustakawan-lihat')
-										<div class="menu-item">
-											<!--begin:Menu link-->
-											<a class="menu-link {{ request()->is('admin/master-pustakawan') ? 'active' : '' }}" href="admin/master-pustakawan">
-												<span class="menu-icon">
-													<i class="ki-duotone ki-user fs-2">
-														<span class="path1"></span>
-														<span class="path2"></span>
-													</i>
-												</span>
-												<span class="menu-title">Pustakawan</span>
-											</a>
-											<!--end:Menu link-->
-										</div>
-										@endcan
-										<!--end:Menu item-->
-										@can('master jadwal-lihat')
 										<div data-kt-menu-trigger="click" class="menu-item menu-accordion">
-                                            <a class="menu-link {{ request()->is('admin/master-jadwal') ? 'active' : '' }}" href="admin/master-jadwal">
+                                            <a class="menu-link {{ request()->is('admin/outflow') ? 'active' : '' }}" href="admin/outflow">
                                                 <span class="menu-icon">
-													<i class="ki-outline ki-book fs-2"></i>
+													<i class="ki-outline ki-chart-line-down fs-2"></i>
 												</span> 
-												<span class="menu-title">Jadwal</span>
+												<span class="menu-title">Cash Outflow</span>
 											</a>
 										</div>
-										@endcan
-										<!--end:Menu item-->
-										<!--begin:Menu item-->
-										@can('master libur-lihat')
+
 										<div data-kt-menu-trigger="click" class="menu-item menu-accordion">
-                                            <a class="menu-link {{ request()->is('admin/master-libur') ? 'active' : '' }}" href="admin/master-libur">
+                                            <a class="menu-link {{ request()->is('admin/plan') ? 'active' : '' }}" href="admin/plan">
                                                 <span class="menu-icon">
-													<i class="ki-outline ki-abstract-16 fs-2"></i>
+													<i class="ki-outline ki-lots-shopping fs-2"></i>
 												</span> 
-												<span class="menu-title">Libur</span>
+												<span class="menu-title">Plan Spending</span>
 											</a>
 										</div>
-										@endcan
-										<!--end:Menu item-->
-										<!--begin:Menu item-->
-										@can('master ruang-lihat')
-										<div data-kt-menu-trigger="click" class="menu-item menu-accordion">
-                                            <a class="menu-link {{ request()->is('admin/master-ruang') ? 'active' : '' }}" href="admin/master-ruang">
-                                                <span class="menu-icon">
-													<i class="ki-outline ki-cheque fs-2"></i>
-												</span> 
-												<span class="menu-title">Ruang</span>
-											</a>
-										</div>
-										@endcan
-										<!--end:Menu item-->
-										<!--begin:Menu item-->
-										@can('master jabatan-lihat')
-										<div data-kt-menu-trigger="click" class="menu-item menu-accordion">
-                                            <a class="menu-link {{ request()->is('admin/master-jabatan') ? 'active' : '' }}" href="admin/master-jabatan">
-                                                <span class="menu-icon">
-													<i class="ki-outline ki-user-square fs-2"></i>
-												</span> 
-												<span class="menu-title">Jabatan</span>
-											</a>
-										</div>
-										@endcan
-										<!--end:Menu item-->
-										<!--begin:Menu item-->
-										@can('master pendPagi-lihat')
-										<div data-kt-menu-trigger="click" class="menu-item menu-accordion">
-                                            <a class="menu-link {{ request()->is('admin/master-pendPagi') ? 'active' : '' }}" href="admin/master-pendPagi">
-                                                <span class="menu-icon">
-													<i class="ki-outline ki-user-square fs-2"></i>
-												</span> 
-												<span class="menu-title">Pendidikan Pagi</span>
-											</a>
-										</div>
-										@endcan
-										<!--end:Menu item-->
-										@endcanany
 
 
-										<div class="pt-5 menu-item">
-											<!--begin:Menu content-->
-											<div class="menu-content">
-												<span class="menu-heading fw-bold text-uppercase fs-7">Payroll</span>
-											</div>
-											<!--end:Menu content-->
-										</div>
-
-										@php
-											$payrollPermission = [
-												'payroll tunjangan-lihat',
-											];
-
-											$payrollActive = request()->is('admin/payroll-*');
-										@endphp
-
-										@canany($payrollPermission)
-										<!--begin:Menu item-->
-										<div data-kt-menu-trigger="click" class="menu-item menu-accordion {{ $payrollActive ? 'here show' : '' }}">
-                                            @can('payroll tunjangan-lihat')
-											<span class="menu-link">
-                                                <span class="menu-icon">
-                                                    <i class="ki-outline ki-financial-schedule fs-2"></i>
-                                                </span>
-                                                <span class="menu-title">Tunjangan</span>
-                                                <span class="menu-arrow"></span>
-                                            </span>
-											<!--begin:Menu sub-->
-                                            <div class="menu-sub menu-sub-accordion">
-												<!--begin:Menu item-->
-                                                <div class="menu-item">
-                                                    <a class="menu-link {{ request()->is('admin/payroll-kehadiran') ? 'active' : '' }}" href="admin/payroll-kehadiran">
-                                                        <span class="menu-bullet">
-															<span class="bullet bullet-dot"></span>
-														</span>
-                                                        <span class="menu-title">Kehadiran</span>
-                                                    </a>
-                                                </div>
-												<!--end:Menu item-->
-												<!--begin:Menu item-->
-                                                <div class="menu-item">
-                                                    <a class="menu-link {{ request()->is('admin/payroll-jabatan') ? 'active' : '' }}" href="admin/payroll-jabatan">
-                                                        <span class="menu-bullet">
-															<span class="bullet bullet-dot"></span>
-														</span>
-                                                        <span class="menu-title">Jabatan</span>
-                                                    </a>
-                                                </div>
-												<!--end:Menu item-->
-												<!--begin:Menu item-->
-                                                <div class="menu-item">
-                                                    <a class="menu-link {{ request()->is('admin/payroll-pengabdian') ? 'active' : '' }}" href="admin/payroll-pengabdian">
-                                                        <span class="menu-bullet">
-															<span class="bullet bullet-dot"></span>
-														</span>
-                                                        <span class="menu-title">Pengabdian</span>
-                                                    </a>
-                                                </div>
-												<!--end:Menu item-->
-												<!--begin:Menu item-->
-                                                <div class="menu-item">
-                                                    <a class="menu-link {{ request()->is('admin/payroll-tunkel') ? 'active' : '' }}" href="admin/payroll-tunkel">
-                                                        <span class="menu-bullet">
-															<span class="bullet bullet-dot"></span>
-														</span>
-                                                        <span class="menu-title">Tunkel</span>
-                                                    </a>
-                                                </div>
-												<!--end:Menu item-->
-												<!--begin:Menu item-->
-                                                <div class="menu-item">
-                                                    <a class="menu-link {{ request()->is('admin/payroll-kehormatan') ? 'active' : '' }}" href="admin/payroll-kehormatan">
-                                                        <span class="menu-bullet">
-															<span class="bullet bullet-dot"></span>
-														</span>
-                                                        <span class="menu-title">Kehormatan</span>
-                                                    </a>
-                                                </div>
-												<!--end:Menu item-->
-												<!--begin:Menu item-->
-                                                <div class="menu-item">
-                                                    <a class="menu-link {{ request()->is('admin/payroll-anak') ? 'active' : '' }}" href="admin/payroll-anak">
-                                                        <span class="menu-bullet">
-															<span class="bullet bullet-dot"></span>
-														</span>
-                                                        <span class="menu-title">Anak</span>
-                                                    </a>
-                                                </div>
-												<!--end:Menu item-->
-												<!--begin:Menu item-->
-                                                <div class="menu-item">
-                                                    <a class="menu-link {{ request()->is('admin/payroll-rankDosen') ? 'active' : '' }}" href="admin/payroll-rankDosen">
-                                                        <span class="menu-bullet">
-															<span class="bullet bullet-dot"></span>
-														</span>
-                                                        <span class="menu-title">Rank Dosen</span>
-                                                    </a>
-                                                </div>
-												<!--end:Menu item-->
-                                            </div>
-											<!--end:Menu sub-->
-											@endcan
-                                        </div>
-										@endcanany
-										<!--end:Menu item-->
 
 										<div class="pt-5 menu-item">
 											<!--begin:Menu content-->

@@ -10,13 +10,7 @@
         <!--begin::Menu-->
         <ul class="menu menu-gray-600 menu-hover-primary fw-semibold order-1">
             <li class="menu-item">
-                <a href="#" target="_blank" class="menu-link px-2">Tentang</a>
-            </li>
-            <li class="menu-item">
-                <a href="#" target="_blank" class="menu-link px-2">Dukungan</a>
-            </li>
-            <li class="menu-item">
-                <a href="#" target="_blank" class="menu-link px-2">Tawaran</a>
+                <a target="_blank" class="menu-link px-2">This is my personal website</a>
             </li>
         </ul>
         <!--end::Menu-->
