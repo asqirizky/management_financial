@@ -150,7 +150,7 @@
 												<span class="menu-icon" data-kt-element="icon">
 													<i class="ki-outline ki-night-day fs-2"></i>
 												</span>
-												<span class="menu-title">Terang</span>
+												<span class="menu-title">Light</span>
 											</a>
 										</div>
 										<!--end::Menu item-->
@@ -160,7 +160,7 @@
 												<span class="menu-icon" data-kt-element="icon">
 													<i class="ki-outline ki-moon fs-2"></i>
 												</span>
-												<span class="menu-title">Gelap</span>
+												<span class="menu-title">Dark</span>
 											</a>
 										</div>
 										<!--end::Menu item-->
@@ -170,7 +170,7 @@
 												<span class="menu-icon" data-kt-element="icon">
 													<i class="ki-outline ki-screen fs-2"></i>
 												</span>
-												<span class="menu-title">Sistem</span>
+												<span class="menu-title">System</span>
 											</a>
 										</div>
 										<!--end::Menu item-->
@@ -197,7 +197,7 @@
 												<!--begin::Username-->
 												<div class="d-flex flex-column">
 													<div class="fw-bold d-flex align-items-center fs-5">{{ auth()->user()->name ?? '' }}
-													<span class="px-2 py-1 badge badge-light-success fw-bold fs-8 ms-2">AKtif</span></div>
+													<span class="px-2 py-1 badge badge-light-success fw-bold fs-8 ms-2">Active</span></div>
 													<a href="#" class="fw-semibold text-muted text-hover-primary fs-7">{{ auth()->user()->idstaf ?? '' }}</a>
 												</div>
 												<!--end::Username-->
@@ -209,13 +209,13 @@
 										<!--end::Menu separator-->
 										<!--begin::Menu item-->
 										<div class="px-5 menu-item">
-											<a href="#" class="px-5 menu-link">Profil</a>
+											<a href="#" class="px-5 menu-link">Profile</a>
 										</div>
 										<!--end::Menu item-->
 
 										<!--begin::Menu item-->
 										<div class="px-5 menu-item">
-											<a href="{{ route('logout') }}" class="px-5 menu-link">Keluar</a>
+											<a href="{{ route('logout') }}" class="px-5 menu-link">Logout</a>
 										</div>
 										<!--end::Menu item-->
 									</div>
@@ -285,7 +285,7 @@
                                                 <span class="menu-icon">
 													<i class="ki-outline ki-home fs-2"></i>
 												</span>
-												<span class="menu-title">Beranda</span>
+												<span class="menu-title">Dashboard</span>
 											</a>
 										</div>
 										<!--end:Menu item-->
@@ -293,7 +293,7 @@
 										<div class="pt-5 menu-item">
 											<!--begin:Menu content-->
 											<div class="menu-content">
-												<span class="menu-heading fw-bold text-uppercase fs-7">Aplikasi</span>
+												<span class="menu-heading fw-bold text-uppercase fs-7">Application</span>
 											</div>
 											<!--end:Menu content-->
 										</div>
@@ -325,59 +325,43 @@
 											</a>
 										</div>
 
-
-
 										<div class="pt-5 menu-item">
 											<!--begin:Menu content-->
 											<div class="menu-content">
-												<span class="menu-heading fw-bold text-uppercase fs-7">Hak Akses</span>
+												<span class="menu-heading fw-bold text-uppercase fs-7">Access</span>
 											</div>
 											<!--end:Menu content-->
 										</div>
 
-										@php
-                                            $penggunaPermission = [
-                                                'pengguna-lihat',
-												'akses pengguna-lihat',
-                                            ];
-
-                                            $penggunaActive = request()->is('admin/pengguna*');
-                                        @endphp
-                                        @canany($penggunaPermission)
-                                        <div data-kt-menu-trigger="click" class="menu-item menu-accordion {{ $penggunaActive ? 'here show' : '' }}">
+                                        <div data-kt-menu-trigger="click" class="menu-item menu-accordion">
                                             <span class="menu-link">
                                                 <span class="menu-icon">
                                                     <i class="ki-outline ki-address-book fs-2"></i>
                                                 </span>
-                                                <span class="menu-title">Pengguna</span>
+                                                <span class="menu-title">Users</span>
                                                 <span class="menu-arrow"></span>
                                             </span>
                                             <div class="menu-sub menu-sub-accordion">
-                                                @can('pengguna-lihat')
                                                 <div class="menu-item">
                                                     <a class="menu-link {{ request()->is('admin/pengguna') ? 'active' : ''}}" href="admin/pengguna">
 														<span class="menu-bullet">
 															<span class="bullet bullet-dot"></span>
 														</span>
-														<span class="menu-title">Data Pengguna</span>
+														<span class="menu-title">User Data</span>
 													</a>
                                                 </div>
-                                                @endcan
-												@can('akses pengguna-lihat')
 												<div class="menu-item">
 													<!--begin:Menu link-->
 													<a class="menu-link {{ request()->is('admin/pengguna-akses') ? 'active' : ''}}" href="admin/pengguna-akses">
 														<span class="menu-bullet">
 															<span class="bullet bullet-dot"></span>
 														</span>
-														<span class="menu-title">Akses</span>
+														<span class="menu-title">Access</span>
 													</a>
 													<!--end:Menu link-->
 												</div>
-												@endcan
                                             </div>
                                         </div>
-                                        @endcanany
 
 										
 										<!--end:Menu item-->
@@ -452,7 +436,6 @@
             });
         </script>
         @endif
-        // Script Delete Button
         <script>
             document.addEventListener('DOMContentLoaded', function () {
                 document.querySelectorAll('.delete-button').forEach(function (button) {
@@ -461,12 +444,12 @@
                         const url = this.getAttribute('href'); // Ambil URL dari atribut href
 
                         Swal.fire({
-                            title: 'Apakah Anda yakin?',
-                            text: "Data ini akan dihapus dan tidak dapat dikembalikan!",
+                            title: 'Are you sure?',
+                            text: "This data will be deleted and cannot be recovered!",
                             icon: 'warning',
                             showCancelButton: true,
-                            confirmButtonText: 'Ya, hapus!',
-                            cancelButtonText: 'Batal',
+                            confirmButtonText: 'Yes, destroy!',
+                            cancelButtonText: 'canceled',
                             customClass: {
                                 confirmButton: 'btn btn-danger', // Gaya tombol
                                 cancelButton: 'btn btn-secondary'
@@ -482,6 +465,36 @@
                 });
             });
         </script>
+		<!--begin::Script Purchase Button-->
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                document.querySelectorAll('.purchase-button').forEach(function (button) {
+                    button.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        const url = this.getAttribute('href');
+
+                        Swal.fire({
+                            title: 'Are you sure?',
+                            text: "Item will be purchased and added to cash outflow!",
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonText: 'Yes, purchase!',
+                            cancelButtonText: 'Cancel',
+                            customClass: {
+                                confirmButton: 'btn btn-primary',
+                                cancelButton: 'btn btn-secondary'
+                            },
+                            buttonsStyling: false
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.href = url;
+                            }
+                        });
+                    });
+                });
+            });
+        </script>
+		<!--end::Script Purchase Button-->
 		<!--beign::Script Maintenance-->
         <script>
             document.addEventListener('DOMContentLoaded', function () {

@@ -9,18 +9,18 @@ class InflowController extends Controller
 {
     public function index(Request $request)
     {
-        $month = $request->input('month');
-        $year = $request->input('year');
+        $bulan = $request->bulan ?? now()->month;
+        $tahun = $request->tahun ?? now()->year;
         $search = $request->input('search');
 
         $query = Inflow::query();
 
-        if ($month) {
-            $query->whereMonth('tanggal_masuk', $month);
+        if ($bulan) {
+            $query->whereMonth('tanggal_masuk', $bulan);
         }
 
-        if ($year) {
-            $query->whereYear('tanggal_masuk', $year);
+        if ($tahun) {
+            $query->whereYear('tanggal_masuk', $tahun);
         }
 
         if ($search) {
@@ -49,16 +49,14 @@ class InflowController extends Controller
             9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember',
         ];
 
-        $period = 'Semua Periode';
-        if ($month && $year) {
-            $period = $months[$month] . ' ' . $year;
-        } elseif ($month) {
-            $period = $months[$month];
-        } elseif ($year) {
-            $period = (string) $year;
-        }
-
-        return view('admin.Inflow.cash_inflow', compact('inflows', 'years', 'months', 'month', 'year', 'search', 'period'));
+        return view('admin.Inflow.cash_inflow', compact(
+            'inflows',
+            'years',
+            'months',
+            'bulan',
+            'tahun',
+            'search',
+        ));
     }
 
     public function store(Request $request)
@@ -94,17 +92,11 @@ class InflowController extends Controller
         return back()->with('success', 'Inflow data has been updated successfully.');
     }
 
-    public function destroy(Inflow $inflow)
+    public function destroy($id)
     {
+        $inflow = Inflow::findOrFail($id);
         $inflow->delete();
 
-        return back()->with('success', 'Inflow data has been deleted successfully.');
-    }
-
-    public function hapus(Inflow $inflow)
-    {
-        $inflow->delete();
-
-        return back()->with('success', 'Inflow data has been deleted successfully.');
+        return redirect()->route('inflow.index')->with('success', 'Inflow data has been deleted successfully.');
     }
 }

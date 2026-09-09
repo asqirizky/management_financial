@@ -1,3 +1,4 @@
+
 <?php $__env->startSection('admin-konten'); ?>
     
 <div class="app-main flex-column flex-row-fluid" id="kt_app_main">
@@ -16,7 +17,7 @@
                     <ul class="pt-1 my-0 breadcrumb breadcrumb-separatorless fw-semibold fs-7">
                         <!--begin::Item-->
                         <li class="breadcrumb-item text-muted">
-                            <a href="admin/home" class="text-muted text-hover-primary">Beranda</a>
+                            <a href="admin/home" class="text-muted text-hover-primary">Dashboard</a>
                         </li>
                         <!--end::Item-->
                         <!--begin::Item-->
@@ -62,7 +63,7 @@
 									<!--begin::Actions-->
 									<div class="d-flex mb-4">
 										<a type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#kt_modal_update_details">
-											<i class="ki-duotone ki-plus fs-2"></i> Tambah Saldo
+											<i class="ki-duotone ki-plus fs-2"></i> Add Saldo
 										</a>
 									</div>
 									<!--end::Actions-->
@@ -108,39 +109,36 @@
 						<!--begin::Card title-->
 						<div class="card-title flex-column">
 							<h3 class="fw-bold mb-1">Cash Inflow List</h3>
-							<div class="fs-6 text-gray-500">Total pemasukan terdaftar</div>
+							<div class="fs-6 text-gray-500">Total registered income</div>
 						</div>
 						<!--begin::Card title-->
 						<!--begin::Card toolbar-->
 						<div class="card-toolbar my-1">
-							<form method="GET" id="kt_filter_form" class="d-flex flex-wrap align-items-center">
-								<!--begin::Select-->
-								<div class="me-4 my-1">
-									<select id="kt_filter_month" name="month" data-control="select2" data-hide-search="true" class="w-150px form-select form-select-solid form-select-sm">
-										<option value="">Semua Bulan</option>
-										<?php $__currentLoopData = $months; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $label): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-											<option value="<?php echo e($key); ?>" <?php echo e($month == $key ? 'selected' : ''); ?>><?php echo e($label); ?></option>
-										<?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-									</select>
-								</div>
-								<!--end::Select-->
-								<!--begin::Select-->
-								<div class="me-4 my-1">
-									<select id="kt_filter_year" name="year" data-control="select2" data-hide-search="true" class="w-150px form-select form-select-solid form-select-sm">
-										<option value="">Semua Tahun</option>
-										<?php $__currentLoopData = $years; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $y): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-												<option value="<?php echo e($y); ?>" <?php echo e($year == $y ? 'selected' : ''); ?>><?php echo e($y); ?></option>
-										<?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-									</select>
-								</div>
-								<!--end::Select-->
-								<button type="submit" class="btn btn-primary btn-sm my-1 me-2">
-									<i class="ki-outline ki-magnifier fs-2"></i> Filter
-								</button>
-								<?php if($month || $year || $search): ?>
-								<a href="<?php echo e(route('inflow.index')); ?>" class="btn btn-light btn-sm my-1">Reset</a>
-								<?php endif; ?>
-							</form>
+							<form method="GET" class="d-flex align-items-center gap-3">
+                                <div>
+                                    <select name="bulan" id="bulan" class="form-select" data-control="select2" data-hide-search="true">
+                                        <?php $__currentLoopData = range(1, 12); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $b): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <option value="<?php echo e($b); ?>" <?php echo e(request('bulan', now()->month) == $b ? 'selected' : ''); ?>>
+                                                <?php echo e(\Carbon\Carbon::create()->month($b)->translatedFormat('F')); ?>
+
+                                            </option>
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                    </select>
+                                </div>
+                                <div>
+                                    <select name="tahun" id="tahun" class="form-select" data-control="select2" data-hide-search="true">
+                                        <?php $__currentLoopData = range(now()->year - 5, now()->year + 1); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $t): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <option value="<?php echo e($t); ?>" <?php echo e(request('tahun', now()->year) == $t ? 'selected' : ''); ?>>
+                                                <?php echo e($t); ?>
+
+                                            </option>
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                    </select>
+                                </div>
+                                <button type="submit" class="btn btn-danger">
+                                    <i class="ki-outline ki-filter fs-5"></i> Filter
+                                </button>
+                            </form>
 						</div>
 						<!--begin::Card toolbar-->
 					</div>
@@ -151,12 +149,12 @@
 						<div class="table-responsive">
 							<!--begin::Table-->
 							<table id="kt_profile_overview_table" class="table table-row-bordered table-row-dashed gy-4 align-middle fw-bold">
-								<thead class="fs-7 text-gray-500 text-uppercase">
+								<thead class="fs-7 text-gray-100 bg-success text-uppercase">
 									<tr>
-										<th class="text-start ps-4 min-w-250px">Sumber Dana</th>
-										<th class="text-center min-w-150px">Tanggal</th>
+										<th class="rounded-start text-start ps-4 min-w-250px">Source Of Found</th>
+										<th class="text-center min-w-150px">Date</th>
 										<th class="text-center min-w-90px">Debit</th>
-										<th class="text-center pe-4 min-w-50px">Option</th>
+										<th class="rounded-end text-center pe-4 min-w-50px">Option</th>
 									</tr>
 								</thead>
 								<tbody class="fs-6">
@@ -173,16 +171,12 @@
 										<td class="text-center"><?php echo e(Carbon\Carbon::parse($item->tanggal_masuk)->format('d M Y')); ?></td>
 										<td class="text-center">Rp. <?php echo e(number_format($item->nominal, 0, ',', '.')); ?></td>
 										<td class="text-center pe-4">
-											<button type="button" class="btn btn-center btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#kt_modal_edit_details" data-id="<?php echo e($item->id); ?>" data-nominal="<?php echo e($item->nominal); ?>" data-sumber_dana="<?php echo e($item->sumber_dana); ?>" data-keterangan="<?php echo e($item->keterangan); ?>" data-tanggal_masuk="<?php echo e($item->tanggal_masuk); ?>">
+											<a type="button" class="btn btn-center btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#kt_modal_edit_details" data-id="<?php echo e($item->id); ?>" data-nominal="<?php echo e($item->nominal); ?>" data-sumber_dana="<?php echo e($item->sumber_dana); ?>" data-keterangan="<?php echo e($item->keterangan); ?>" data-tanggal_masuk="<?php echo e($item->tanggal_masuk); ?>">
 												<i class="ki-outline ki-pencil fs-2"></i> Edit
-											</button>
-											<form action="<?php echo e(route('inflow.hapus', $item->id)); ?>" method="POST" style="display: inline;">
-												<?php echo csrf_field(); ?>
-												<?php echo method_field('DELETE'); ?>
-												<button type="submit" class="btn btn-center btn-light-danger btn-sm delete-button">
-													<i class="ki-outline ki-trash fs-2"></i> Hapus
-												</button>
-											</form>
+											</a>
+											<a href="<?php echo e(route('inflow.hapus', $item->id)); ?>" type="submit" class="btn btn-center btn-light-danger btn-sm delete-button">
+												<i class="ki-outline ki-trash fs-2"></i> Delete
+											</a>
 										</td>
 									</tr>
 									<?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
@@ -199,6 +193,8 @@
 			<!--end::Content container-->
 		</div>
 		<!--end::Content-->
+
+		<?php echo $__env->make('layout.footer', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
 	</div>
 </div>	
 

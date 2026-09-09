@@ -3,14 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\Outflow;
+use App\Models\PlanSpanding;
 use Illuminate\Http\Request;
 
 class OutflowController extends Controller
 {
     public function index(Request $request)
     {
-        $month = $request->input('month');
-        $year = $request->input('year');
+        $bulan = $request->bulan ?? now()->month;
+        $tahun = $request->tahun ?? now()->year;
         $search = $request->input('search');
 
         $months = [
@@ -21,20 +22,22 @@ class OutflowController extends Controller
 
         $years = [];
 
-        $period = 'Semua Periode';
-        if ($month && $year) {
-            $period = $months[$month] . ' ' . $year;
-        } elseif ($month) {
-            $period = $months[$month];
-        } elseif ($year) {
-            $period = (string) $year;
-        }
 
         $outflows = Outflow::get();
 
         $total = $outflows->sum(fn ($item) => $item->quantity * $item->harga_satuan);
 
-        return view('admin.Outflow.cash_outflow', compact('outflows', 'total', 'years', 'months', 'month', 'year', 'search', 'period'));
+        $purchases = PlanSpanding::where('status', 'purchase')->orderBy('created_at', 'desc')->get();
+
+        return view('admin.Outflow.cash_outflow', compact(
+            'outflows',
+            'total',
+            'purchases',
+            'tahun',
+            'months',
+            'bulan',
+            'search',
+        ));
     }
 
     public function store(Request $request){
@@ -76,9 +79,33 @@ class OutflowController extends Controller
         return redirect()->route('outflow.index')->with('success', 'Outflow data has been updated successfully.');
     }
 
+    public function buy(Request $request)
+    {
+        $request->validate([
+            'selected' => 'required|array|min:1',
+            'selected.*' => 'integer|exists:plan_spandings,id',
+        ]);
+
+        foreach ($request->selected as $planId) {
+            $plan = PlanSpanding::findOrFail($planId);
+
+            Outflow::create([
+                'item_jenis_barang' => $plan->item,
+                'quantity' => 1,
+                'harga_satuan' => $plan->price,
+                'tanggal_pembelian' => now()->toDateString(),
+            ]);
+
+            $plan->update(['status' => 'already']);
+        }
+
+        return back()->with('success', 'Purchase successful. Items have been added to cash outflow.');
+    }
+
     public function destroy($id)
     {
         $outflow = Outflow::findOrFail($id);
+        
         $outflow->delete();
 
         return redirect()->route('outflow.index')->with('success', 'Outflow data has been deleted successfully.');

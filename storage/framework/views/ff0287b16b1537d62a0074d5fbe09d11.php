@@ -144,7 +144,7 @@
   <div class="login-card">
     <div class="welcome">
       <h1>Hello, Welcome!</h1>
-      <p>Silakan masuk untuk mengelola sistem management financial Anda.</p>
+      <p>Please log in to manage your financial management system.</p>
     </div>
     <div class="form-side">
       <form action="<?php echo e(route('login')); ?>" method="POST">

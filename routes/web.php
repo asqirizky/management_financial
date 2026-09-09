@@ -44,23 +44,21 @@ Route::middleware(['auth', PermissionMiddleware::class . ':pengguna-akses penggu
     Route::post('/admin/pengguna-akses/{id}/update', [UserController::class, 'updateAkses']);
 });
 
-Route::middleware(['auth', PermissionMiddleware::class . ':akses pengguna-lihat'])->group(function () {
-    Route::resource('/admin/pengguna-akses', PermissionController::class);
-});
+Route::resource('/admin/pengguna-akses', PermissionController::class);
 
-Route::middleware(['auth', PermissionMiddleware::class . ':akses pengguna-hapus'])->group(function () {
-    Route::get('/admin/pengguna-akses/{id}/hapus', [PermissionController::class, 'destroy']);
-});
+Route::get('/admin/pengguna-akses/{id}/hapus', [PermissionController::class, 'destroy']);
 
 Route::resource('admin/inflow', InflowController::class);
 
-Route::get('admin/inflow/{inflow}/hapus', [InflowController::class, 'hapus'])->name('inflow.hapus');
-Route::get('admin/inflow({id})/hapus', [InflowController::class, 'hapus']);
+Route::get('admin/inflow({id})/hapus', [InflowController::class, 'destroy'])->name('inflow.hapus');
 
 Route::resource('admin/outflow', OutflowController::class);
 Route::get('admin/outflow({id})/hapus', [OutflowController::class, 'destroy'])->name('outflow.hapus');
+Route::post('admin/outflow/buy', [OutflowController::class, 'buy'])->name('outflow.buy');
 
 
 Route::resource('admin/plan', PlanController::class);
+Route::get('admin/plan({id})/hapus', [PlanController::class, 'destroy'])->name('plan.hapus');
+Route::get('admin/plan/{id}/purchase', [PlanController::class, 'purchase'])->name('plan.purchase');
 
 
